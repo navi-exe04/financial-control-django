@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FINACON</title>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li>
+                    <a href="{% url 'inicio' %}">Inicio</a>
+                </li>
+                <li>
+                    <a href="{% url 'gastos' %}">Gastos</a>
+                </li>
+                <li>
+                    <a href="{% url 'ingresos' %}">Ingresos</a>
+                </li>
+                <li>
+                    <a href="{% url 'reporte' %}">Reporte</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    {% block content %}
+    {% endblock %}
+</body>
+
+</html>
