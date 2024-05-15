@@ -114,6 +114,8 @@ USE_TZ = True
 
 LOGIN_URL = '/login'
 
+AUTH_USER_MODEL = "finances.CustomUser"
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 

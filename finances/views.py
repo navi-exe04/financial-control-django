@@ -1,7 +1,8 @@
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from .models import CustomUser
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 
@@ -59,7 +60,7 @@ def register_user(request):
         if password1 == password2:
             # Create a new user in db
             try:
-                user = User.objects.create_user(
+                user = CustomUser.objects.create_user(
                     username=username,
                     password=password1
                 )
