@@ -1,118 +1,120 @@
-from django.shortcuts import redirect, render
-from django.http import HttpResponse
+"""
+Defines all the user views for financial control
+"""
+from django.shortcuts import redirect
 from django.contrib.auth import login, logout, authenticate
-# from django.contrib.auth.models import User
-from .models import CustomUser
-from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
+from django.utils.decorators import method_decorator
+from django.views.generic import TemplateView, ListView, FormView, View
+from .models import Transaction
+from .forms import CustomUserForm
 
 # Create your views here.
 
 
-def home(request):
+class HomeView(TemplateView):
     """
     The main view of the system
     """
-    return render(request, 'home.html')
+    template_name = "home.html"
 
 
-@login_required
-def expenses(request):
+@method_decorator(login_required, name="dispatch")
+class ExpensesView(ListView):
     """
     List of expenses of the user
     """
-    return render(request, 'expenses.html')
+    model = Transaction
+    template_name = "expenses.html"
 
 
-@login_required
-def incomes(request):
+@method_decorator(login_required, name="dispatch")
+class IncomesView(ListView):
     """
     List of incomes of the user
     """
-    return render(request, 'incomes.html')
+    model = Transaction
+    template_name = "incomes.html"
 
 
-@login_required
-def report(request):
+@method_decorator(login_required, name="dispatch")
+class ReportView(ListView):
     """
     General report of expenses and incomes
     """
-    return render(request, 'report.html')
+    model = Transaction
+    template_name = "report.html"
 
 
 # user views
-def register_user(request):
+class RegisterUserView(FormView):
     """
-    GET - Shows the register form to the user
-    POST - Register a new user in system
+    Manage the register of a new user in the system
     """
-    # GET METHOD
-    if request.method == 'GET':
-        return render(request, 'register.html')
-    # POST METHOD
-    else:
-        error = ""
-        username = request.POST['username']
-        password1 = request.POST['password1']
-        password2 = request.POST['password2']
+    template_name = "register.html"
+    form_class = CustomUserForm
+    success_url = "/report/"
 
-        # The passwords match
-        if password1 == password2:
-            # Create a new user in db
-            try:
-                user = CustomUser.objects.create_user(
-                    username=username,
-                    password=password1
-                )
-                user.save()
-                login(request, user)
-                return redirect('report')
-            # The user already exists in db
-            except IntegrityError:
-                error = "The user already exists"
-        # Passwords do not match
-        else:
-            error = "Passwords do not match"
+    def form_valid(self, form):
+        """
+        Verify if the user information to register is correct to save
+        """
+        user = form.save()
+        login(self.request, user)
+        return redirect(self.success_url)
 
-        return render(request, 'register.html', {
-            'error': error
-        })
+    def form_invalid(self, form):
+        """
+        Something with the user information is wrong
+        """
+        error = "Something is wrong"
+        return self.render_to_response(
+            self.get_context_data(form=form, error=error)
+        )
 
 
-def login_user(request):
+class LoginUserView(FormView):
     """
-    GET - Shows the login form to the user
-    POST - Login in to system
+    Manage the login of a user in the system
     """
-    # GET METHOD
-    if request.method == 'GET':
-        return render(request, 'login.html')
-    # POST METHOD
-    else:
-        error = ""
-        username = request.POST['username']
-        password = request.POST['password']
+    template_name = "login.html"
+    form_class = AuthenticationForm
+    success_url = "/report/"
 
-        # verify if the user exists in db
-        user = authenticate(request, username=username, password=password)
-
-        # user is valid
+    def form_valid(self, form):
+        """
+        Authenticate if there is a user with the username and password
+        """
+        username = self.request.POST['username']
+        password = self.request.POST['password']
+        user = authenticate(self.request, username=username, password=password)
         if user is not None:
-            # login system
-            login(request, user)
-            return redirect('report')
-        # user is not valid
+            login(self.request, user)
+            return redirect(self.success_url)
         else:
-            error = "Username or password are incorrect"
-            return render(request, 'login.html', {
-                'error': error
-            })
+            return self.form_invalid(form)
+
+    def form_invalid(self, form):
+        """
+        The user or the password are wrong
+        """
+        error = "Invalid user or password"
+        return self.render_to_response(
+            self.get_context_data(form=form, error=error)
+        )
 
 
-@login_required
-def logout_user(request):
+@method_decorator(login_required, name="dispatch")
+class LogoutUserView(View):
     """
     Logout the user from the system
     """
-    logout(request)
-    return redirect('home')
+    redirect_url = "/login/"
+
+    def get(self, request):
+        """
+        Logout the system
+        """
+        logout(request)
+        return redirect(self.redirect_url)

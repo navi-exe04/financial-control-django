@@ -7,7 +7,21 @@
     <form action="/register/" method="POST">
         {% csrf_token %}
         <div>
-            <span>{{ error }}</span>
+            {% for error in form.username.errors %}
+            <div>
+                <span> {{ error }} </span>
+            </div>
+            {% endfor %}
+            {% for error in form.password1.errors %}
+            <div>
+                <span> {{ error }} </span>
+            </div>
+            {% endfor %}
+            {% for error in form.password2.errors %}
+            <div>
+                <span> {{ error }} </span>
+            </div>
+            {% endfor %}
         </div>
         <div>
             <label for="username">Username:</label>
