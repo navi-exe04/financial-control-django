@@ -1,0 +1,21 @@
+{% extends './layouts/base.html' %}
+
+{% block content %}
+<main>
+    <h1>Create a transaction</h1>
+
+    <form action="/create_transaction/" method="POST">
+        {% csrf_token %}
+        <div>
+            <span> {{ error }} </span>
+        </div>
+        
+
+        {{ form }}
+
+        <button type="submit">
+            Create
+        </button>
+    </form>
+</main>
+{% endblock %}

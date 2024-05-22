@@ -3,15 +3,25 @@
 {% block content %}
 <main>
     <h1>Expenses</h1>
-    <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempora corporis ut culpa. Laboriosam, aut quaerat,
-        veniam aspernatur similique id temporibus soluta minus, excepturi minima porro commodi. Tempore accusantium nisi
-        eaque tenetur dolorum tempora debitis repudiandae cumque, molestiae veniam incidunt adipisci obcaecati
-        doloremque. Optio labore, reprehenderit, rem qui nisi numquam inventore harum modi eos libero maiores nostrum
-        dignissimos laboriosam cumque? Nulla nesciunt quos, sed magnam obcaecati et repudiandae optio libero animi, rem
-        exercitationem quae adipisci dolorum odit, assumenda laboriosam in doloremque porro! Voluptatibus, accusamus
-        laborum delectus a velit voluptate qui, alias quas vero tempore aliquid placeat. Labore soluta animi dolorum
-        esse.
-    </p>
+    <div>
+        {% if  incomes_count < 1 %}
+        <span>There is nothing yet.</span>
+        {% else %}
+            {% for expense in expenses %}
+            <div>
+                <h2>
+                    {{ expense.title }}
+                </h2>
+                <p>
+                    {{ expense.description }}
+                <p>
+                <p>
+                    <span> Transaction: {{ expense.transaction_type }} </span>
+                    <span> Category: {{ expense.category }} </span>
+                <p>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
 </main>
 {% endblock %}

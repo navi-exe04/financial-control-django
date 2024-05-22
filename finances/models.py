@@ -22,7 +22,7 @@ class Category(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.title + " by: " + self.user.username
+        return self.title + ""
 
 
 class Transaction(models.Model):
