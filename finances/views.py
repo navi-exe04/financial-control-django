@@ -1,15 +1,16 @@
 """
 Defines all the user views for financial control
 """
+from decimal import Decimal
+from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.decorators import method_decorator
-from django.views.generic import TemplateView, ListView, FormView, View
+from django.views.generic import TemplateView, ListView, FormView, View, DeleteView
 from .models import Transaction, Category
 from .forms import CustomUserForm, TransactionForm, CategoryForm
-from decimal import Decimal
 
 REPORT_TEMPLATE_URL = "/report/"
 ERROR_MESSAGE_RESPONSE = "Something is wrong"
@@ -37,6 +38,7 @@ class CreateTransactionView(FormView):
         transaction = form.save(commit=False)
         transaction.user = self.request.user
         transaction.save()
+
         # Save the transaction amount
         amount = Decimal(self.request.POST['amount'])
         # Check if there is a expense or income
@@ -126,10 +128,31 @@ class ReportView(ListView):
         return Transaction.objects.filter(user=self.request.user)
 
     def get_context_data(self, **kwargs):
+        #calculate the total amount 
+        transactions = Transaction.objects.filter(user=self.request.user)
+        amount = 0
+        for transaction in transactions:
+            if transaction.transaction_type == "EX":
+                amount -= transaction.amount
+            else:
+                amount += transaction.amount
+        self.request.user.total_amount = amount
+        self.request.user.save()
+
         context = super().get_context_data(**kwargs)
         context["total_amount"] = self.request.user.total_amount
         context["transactions_count"] = self.get_queryset().count()
         return context
+
+
+@method_decorator(login_required, name="dispatch")
+class DeleteTransactionView(DeleteView):
+    """
+    Delete a transaction in system
+    """
+    model = Transaction
+    template_name = "transaction_delete.html"
+    success_url = reverse_lazy('report')
 
 
 # user views

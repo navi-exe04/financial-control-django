@@ -1,28 +1,52 @@
 {% extends './layouts/base.html' %}
 
 {% block content %}
-<main>
-    <h1>General report</h1>
-    <h2> TOTAL MONEY: ${{ total_amount }} </h2>
-    <div>
-        {% if  transaction_count < 1 %}
-        <span>There is nothing yet.</span>
-        {% else %}
-            {% for transaction in transactions %}
-            <div>
-                <h2>
-                    {{ transaction.title }}
-                </h2>
-                <p>
-                    {{ transaction.description }}
-                <p>
-                <p>
-                    <span> Transaction: {{ transaction.transaction_type }} </span>
-                    <span> Category: {{ transaction.category }} </span>
-                <p>
+<div class="text-center">
+  <h1 class="display-2">General report</h1>
+  <h2 class="display-5"> TOTAL MONEY: ${{ total_amount }} </h2>
+</div>
+<section class="mt-2">
+    {% if  transaction_count < 1 %}
+      <span>There is nothing yet.</span>
+    {% else %}
+      
+      {% for transaction in transactions %}
+        <div class="card m-4">
+
+          <div class="card-header d-flex justify-content-between">
+              <div class="d-flex align-items-center">
+                <span class="px-2">
+                  {% if transaction.transaction_type == "EX" %}
+                    <i class="bi bi-dash-circle-fill text-danger"></i>
+                  {% else %}
+                    <i class="bi bi-plus-circle-fill text-success"></i>
+                  {% endif %}
+                </span>
+                <h3 class="fs-2">{{ transaction.title }}</h3>
+              </div>
+              <form action="{% url 'delete_transaction' transaction.id %}" action="post">
+                {% csrf_token %}
+                <button class="btn btn-danger">Eliminar</button>
+              </form>
+          </div>
+
+          <div class="card-body">
+            <p class="fst-italic fw-normal fs-4">
+              {{ transaction.description }}
+            <p>
+            <div class="d-flex justify-content-evenly">
+              <p class="fs-6"> 
+                <span class="fw-semibold">Transaction: </span> {{ transaction.transaction_type }} 
+              </p>
+              <p class="fs-6"> 
+                <span class="fw-semibold">Category: </span> {{ transaction.category }} 
+              </p>
             </div>
-            {% endfor %}
-        {% endif %}
-    </div>
-</main>
+          </div>
+
+        </div>
+      {% endfor %}
+
+    {% endif %}
+</section>
 {% endblock %}
