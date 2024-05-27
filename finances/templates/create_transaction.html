@@ -1,21 +1,47 @@
 {% extends './layouts/base.html' %}
 
 {% block content %}
-<main>
-    <h1>Create a transaction</h1>
+<div class="text-center">
+    <h1 class="display-2">Create transaction</h1>
+</div>
+<form action="/create_transaction/" method="POST" class="card lg p-4 my-4 col-md-4 offset-4">
+    {% csrf_token %}
+    <div class="text-center">
+        <span class="text-danger fs-5 fst-italic"> {{ error }} </span>
+    </div>
+    <div class="my-3">
+        <label class="form-label" for="title">Title:</label>
+        <input class="form-control" type="text" id="title" name="title" required placeholder="Enter the transaction title">
+    </div>
+    <div class="my-3">
+        <label class="form-label" for="description">Description:</label>
+        <textarea class="form-control" id="description" name="description" required placeholder="Write a description for your transaction">
+        </textarea>
+    </div>
+    <div class="my-3">
+        <label class="form-label" for="amount">Amount:</label>
+        <input class="form-control" type="number" id="amount" name="amount" required placeholder="Enter the amount of the transaction">
+    </div>
+    <div class="my-3">
+        <label class="form-label" for="transaction_type">Description:</label>
+        <select id="transaction_type" name="transaction_type" required class="form-select">
+            <option value selected disabled>Select transaction type</option>
+            <option value="EX">Expense</option>
+            <option value="IN">Income</option>
+        </select>
+    </div>
+    <div class="my-3">
+        <label class="form-label" for="category">Category:</label>
+        <select id="category" name="category" required class="form-select">
+            <option value selected disabled>Select category type</option>
+            {% for category in categories %}
+            <option value="{{ category.id }}">{{ category.title }}</option>
+            {% endfor %}
+        </select>
+    </div>
 
-    <form action="/create_transaction/" method="POST">
-        {% csrf_token %}
-        <div>
-            <span> {{ error }} </span>
-        </div>
-        
-
-        {{ form }}
-
-        <button type="submit">
-            Create
-        </button>
-    </form>
-</main>
+    <button class="btn btn-primary mt-5" type="submit">
+        Create
+    </button>
+</form>
 {% endblock %}

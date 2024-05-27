@@ -1,43 +1,42 @@
 {% extends './layouts/base.html' %}
 
 {% block content %}
-<main>
-    <h1>Register</h1>
-
-    <form action="/register/" method="POST">
-        {% csrf_token %}
+<div class="text-center">
+    <h1 class="display-2">Register</h1>
+</div>
+<form action="/register/" method="POST" class="card lg p-4 my-4 col-md-4 offset-4">
+    {% csrf_token %}
+    <div class="text-center">
+        {% for error in form.username.errors %}
         <div>
-            {% for error in form.username.errors %}
-            <div>
-                <span> {{ error }} </span>
-            </div>
-            {% endfor %}
-            {% for error in form.password1.errors %}
-            <div>
-                <span> {{ error }} </span>
-            </div>
-            {% endfor %}
-            {% for error in form.password2.errors %}
-            <div>
-                <span> {{ error }} </span>
-            </div>
-            {% endfor %}
+            <span class="text-danger fs-5 fst-italic"> {{ error }} </span>
         </div>
+        {% endfor %}
+        {% for error in form.password1.errors %}
         <div>
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" placeholder="Write your username">
+            <span class="text-danger fs-5 fst-italic"> {{ error }} </span>
         </div>
+        {% endfor %}
+        {% for error in form.password2.errors %}
         <div>
-            <label for="password1">Password:</label>
-            <input type="password" id="password1" name="password1" placeholder="Write your password">
+            <span class="text-danger fs-5 fst-italic"> {{ error }} </span>
         </div>
-        <div>
-            <label for="password2">Confirm your password:</label>
-            <input type="password" id="password2" name="password2" placeholder="Confirm your password">
-        </div>
-        <button type="submit">
-            Register
-        </button>
-    </form>
-</main>
+        {% endfor %}
+    </div>
+    <div class="my-3">
+        <label class="form-label" for="username">Username:</label>
+        <input class="form-control" type="text" id="username" name="username" placeholder="Write your username">
+    </div>
+    <div class="my-3">
+        <label class="form-label" for="password1">Password:</label>
+        <input class="form-control" type="password" id="password1" name="password1" placeholder="Write your password">
+    </div>
+    <div class="my-3">
+        <label class="form-label" for="password2">Confirm your password:</label>
+        <input class="form-control" type="password" id="password2" name="password2" placeholder="Confirm your password">
+    </div>
+    <button class="btn btn-primary mt-5" type="submit">
+        Register
+    </button>
+</form>
 {% endblock %}

@@ -2,6 +2,9 @@
 Defines all the user views for financial control
 """
 from decimal import Decimal
+from django.db.models.base import Model as Model
+from django.db.models.query import QuerySet
+from django.http import HttpRequest, HttpResponse
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib.auth import login, logout, authenticate
@@ -44,10 +47,10 @@ class CreateTransactionView(FormView):
         # Check if there is a expense or income
         if self.request.POST['transaction_type'] == "EX":
             self.request.user.total_amount -= amount
-            self.success_url = "/expenses/"
+            self.success_url = "/report/expenses/"
         else:
             self.request.user.total_amount += amount
-            self.success_url = "/incomes/"
+            self.success_url = "/report/incomes/"
         # update the user information
         self.request.user.save()
         return redirect(self.success_url)
@@ -56,6 +59,13 @@ class CreateTransactionView(FormView):
         return self.render_to_response(
             self.get_context_data(form=form, error=ERROR_MESSAGE_RESPONSE)
         )
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        categories = Category.objects.filter(user=self.request.user)
+        print(categories)
+        context["categories"] = categories
+        return context
 
 
 @method_decorator(login_required, name="dispatch")
@@ -90,7 +100,8 @@ class ExpensesView(ListView):
     context_object_name = "expenses"
 
     def get_queryset(self):
-        return Transaction.objects.filter(user=self.request.user, transaction_type="EX")
+        user_info = self.request.user
+        return Transaction.objects.filter(user=user_info, transaction_type="EX")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -108,12 +119,14 @@ class IncomesView(ListView):
     context_object_name = "incomes"
 
     def get_queryset(self):
-        return Transaction.objects.filter(user=self.request.user, transaction_type="IN")
+        user_info = self.request.user
+        return Transaction.objects.filter(user=user_info, transaction_type="IN")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["incomes_count"] = self.get_queryset().count()
         return context
+
 
 @method_decorator(login_required, name="dispatch")
 class ReportView(ListView):
@@ -125,20 +138,10 @@ class ReportView(ListView):
     context_object_name = "transactions"
 
     def get_queryset(self):
-        return Transaction.objects.filter(user=self.request.user)
+        user_info = self.request.user
+        return Transaction.objects.filter(user=user_info)
 
     def get_context_data(self, **kwargs):
-        #calculate the total amount 
-        transactions = Transaction.objects.filter(user=self.request.user)
-        amount = 0
-        for transaction in transactions:
-            if transaction.transaction_type == "EX":
-                amount -= transaction.amount
-            else:
-                amount += transaction.amount
-        self.request.user.total_amount = amount
-        self.request.user.save()
-
         context = super().get_context_data(**kwargs)
         context["total_amount"] = self.request.user.total_amount
         context["transactions_count"] = self.get_queryset().count()
@@ -153,6 +156,16 @@ class DeleteTransactionView(DeleteView):
     model = Transaction
     template_name = "transaction_delete.html"
     success_url = reverse_lazy('report')
+
+    def post(self, request, *args, **kwargs):
+        user_info = self.request.user
+        transaction = self.get_object()
+        if transaction.transaction_type == "EX":
+            user_info.total_amount += transaction.amount
+        else:
+            user_info.total_amount -= transaction.amount
+        user_info.save()
+        return super().post(request, *args, **kwargs)
 
 
 # user views

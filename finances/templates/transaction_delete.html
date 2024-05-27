@@ -3,12 +3,17 @@
 {% block content %}
 <div class="text-center">
   <h1 class="display-2">Delete transaction</h1>
-  <form action="" method="post">
+  <form action="" method="post" class="my-5">
     {% csrf_token %}
-    <p>Are you sure you want to delete the transaction?</p>
-    <button>
+    <p class="fs-4 text-secondary">Are you sure you want to delete the transaction?</p>
+    <div class="mt-4">
+      <a href="{% url 'report' %}" class="btn btn-primary">
+        Cancel
+      </a>
+      <button class="btn btn-danger">
         Delete
-    </button>
+      </button>
+    </div>
   </form>
 </div>
 {% endblock %}
