@@ -63,8 +63,9 @@ class CreateTransactionView(FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         categories = Category.objects.filter(user=self.request.user)
-        print(categories)
+        categories_size = len(categories)
         context["categories"] = categories
+        context["categories_size"] = categories_size
         return context
 
 
@@ -76,7 +77,7 @@ class CreateCategoryView(FormView):
     model = Category
     template_name = "create_category.html"
     form_class = CategoryForm
-    success_url = REPORT_TEMPLATE_URL
+    success_url = '/create_category/'
 
     def form_valid(self, form):
         category = form.save(commit=False)
@@ -88,6 +89,14 @@ class CreateCategoryView(FormView):
         return self.render_to_response(
             self.get_context_data(form=form, error=ERROR_MESSAGE_RESPONSE)
         )
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        categories = Category.objects.filter(user=self.request.user)
+        categories_size = len(categories)
+        context["categories"] = categories
+        context["categories_size"] = categories_size
+        return context
 
 
 @method_decorator(login_required, name="dispatch")

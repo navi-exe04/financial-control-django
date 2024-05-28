@@ -38,9 +38,12 @@
             <option value="{{ category.id }}">{{ category.title }}</option>
             {% endfor %}
         </select>
+        {% if categories_size <= 0 %}
+            <p class="fs-6 text-secondary mt-2">Please, create at least one category to continue.</p>
+        {% endif %}
     </div>
 
-    <button class="btn btn-primary mt-5" type="submit">
+    <button class="btn btn-primary" type="submit">
         Create
     </button>
 </form>

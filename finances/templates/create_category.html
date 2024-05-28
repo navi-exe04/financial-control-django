@@ -2,25 +2,60 @@
 
 {% block content %}
 <div class="text-center">
-    <h1 class="display-2">Create category</h1>
+    <h1 class="display-2">Categories</h1>
 </div>
-<form action="/create_category/" method="POST" class="card lg p-4 my-4 col-md-4 offset-4">
-    {% csrf_token %}
-    <div class="text-center">
-        <span class="text-danger fs-5 fst-italic"> {{ error }} </span>
+<section class="row">
+    <div class="col-6 p-5">
+        <form action="/create_category/" method="POST" class="card">
+            {% csrf_token %}
+            <div class="text-center card-header">
+                <h2 class="fs-3">Create category</h2>
+            </div>
+            <div class="card-body">
+                <div class="text-center">
+                    <span class="text-danger fs-5 fst-italic"> {{ error }} </span>
+                </div>
+                <div class="my-3">
+                    <label class="form-label" for="title">Title:</label>
+                    <input class="form-control" type="text" id="title" name="title" required placeholder="Enter the transaction title">
+                </div>
+                <div class="my-3">
+                    <label class="form-label" for="description">Description:</label>
+                    <textarea class="form-control" id="description" name="description" required placeholder="Write a description for your transaction">
+                    </textarea>
+                </div>
+            
+                <button class="btn btn-primary mt-5" type="submit">
+                    Create
+                </button>
+            </div>
+        </form>
     </div>
-    <div class="my-3">
-        <label class="form-label" for="title">Title:</label>
-        <input class="form-control" type="text" id="title" name="title" required placeholder="Enter the transaction title">
+    <div class="col-6 p-5">
+        <div class="text-center">
+            <h2 class="fw-bolder fs-3">List of categories</h2>
+        </div>
+        <div>
+            {% if categories_size <= 0 %}
+                <div class="text-center">
+                    <span class="fs-4 fst-italic text-secondary">There is nothing yet.</span>
+                </div>
+            {% else %}
+                {% for category in categories %}
+                    <div class="card px-2 py-1 mb-3 d-flex">
+                        <p class="fw-bold fs-5">
+                            {{ category.title }}
+                        </p>
+                        <span class="fw-light fst-italic fs-6">
+                            {{ category.description }}
+                        </span>
+                        <a class="btn btn-danger">
+                            Eliminar
+                        </a>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
     </div>
-    <div class="my-3">
-        <label class="form-label" for="description">Description:</label>
-        <textarea class="form-control" id="description" name="description" required placeholder="Write a description for your transaction">
-        </textarea>
-    </div>
-
-    <button class="btn btn-primary mt-5" type="submit">
-        Create
-    </button>
-</form>
+</section>
 {% endblock %}
