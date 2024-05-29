@@ -1,0 +1,29 @@
+<div class="text-center">
+    <h2 class="fw-bolder fs-3">List of categories</h2>
+</div>
+<div>
+    {% for category in categories %}
+        <div class="card px-2 py-1 mb-3">
+            <div class="mb-2 d-flex justify-content-between align-items-center">
+                <span class="fw-bold fs-5 text-center">
+                    {{ category.title }}
+                </span>
+                <form action="{% url 'delete_category' category.id %}" action="post">
+                    {% csrf_token %}
+                    <button class="btn btn-danger">
+                        <i class="bi bi-trash3-fill"></i>
+                    </button>
+                </form>
+            </div>
+            <span class="fw-light fst-italic fs-6">
+                {{ category.description }}
+            </span>
+        </div>
+    {% empty %}
+        <div class="text-center">
+            <span class="fs-4 fst-italic text-secondary">
+                No categories registered in the system
+            </span>
+        </div>
+    {% endfor %}
+</div>

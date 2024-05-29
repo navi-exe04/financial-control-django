@@ -93,10 +93,38 @@ class CreateCategoryView(FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         categories = Category.objects.filter(user=self.request.user)
-        categories_size = len(categories)
         context["categories"] = categories
-        context["categories_size"] = categories_size
         return context
+
+
+@method_decorator(login_required, name="dispatch")
+class DeleteTransactionView(DeleteView):
+    """
+    Delete a transaction in system
+    """
+    model = Transaction
+    template_name = "delete_transaction.html"
+    success_url = reverse_lazy('report')
+
+    def post(self, request, *args, **kwargs):
+        user_info = self.request.user
+        transaction = self.get_object()
+        if transaction.transaction_type == "EX":
+            user_info.total_amount += transaction.amount
+        else:
+            user_info.total_amount -= transaction.amount
+        user_info.save()
+        return super().post(request, *args, **kwargs)
+
+
+@method_decorator(login_required, name="dispatch")
+class DeleteCategoryView(DeleteView):
+    """
+    Delete a category in system
+    """
+    model = Category
+    template_name = "delete_category.html"
+    success_url = reverse_lazy('create_category')
 
 
 @method_decorator(login_required, name="dispatch")
@@ -155,26 +183,6 @@ class ReportView(ListView):
         context["total_amount"] = self.request.user.total_amount
         context["transactions_count"] = self.get_queryset().count()
         return context
-
-
-@method_decorator(login_required, name="dispatch")
-class DeleteTransactionView(DeleteView):
-    """
-    Delete a transaction in system
-    """
-    model = Transaction
-    template_name = "transaction_delete.html"
-    success_url = reverse_lazy('report')
-
-    def post(self, request, *args, **kwargs):
-        user_info = self.request.user
-        transaction = self.get_object()
-        if transaction.transaction_type == "EX":
-            user_info.total_amount += transaction.amount
-        else:
-            user_info.total_amount -= transaction.amount
-        user_info.save()
-        return super().post(request, *args, **kwargs)
 
 
 # user views

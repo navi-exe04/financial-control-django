@@ -5,7 +5,7 @@
     <h1 class="display-2">Categories</h1>
 </div>
 <section class="row">
-    <div class="col-6 p-5">
+    <div class="col-sm-5 col-xs-12 p-3">
         <form action="/create_category/" method="POST" class="card">
             {% csrf_token %}
             <div class="text-center card-header">
@@ -25,37 +25,14 @@
                     </textarea>
                 </div>
             
-                <button class="btn btn-primary mt-5" type="submit">
+                <button class="btn btn-primary w-100" type="submit">
                     Create
                 </button>
             </div>
         </form>
     </div>
-    <div class="col-6 p-5">
-        <div class="text-center">
-            <h2 class="fw-bolder fs-3">List of categories</h2>
-        </div>
-        <div>
-            {% if categories_size <= 0 %}
-                <div class="text-center">
-                    <span class="fs-4 fst-italic text-secondary">There is nothing yet.</span>
-                </div>
-            {% else %}
-                {% for category in categories %}
-                    <div class="card px-2 py-1 mb-3 d-flex">
-                        <p class="fw-bold fs-5">
-                            {{ category.title }}
-                        </p>
-                        <span class="fw-light fst-italic fs-6">
-                            {{ category.description }}
-                        </span>
-                        <a class="btn btn-danger">
-                            Eliminar
-                        </a>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        </div>
+    <div class="col-sm-7 col-xs-12 p-3">
+        {% include "./layouts/list_categories.html" with categories=categories %}
     </div>
 </section>
 {% endblock %}
