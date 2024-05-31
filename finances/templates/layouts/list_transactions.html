@@ -1,0 +1,62 @@
+<div class="text-center">
+    <h2 class="fw-bolder fs-3">{{ transaction_type }}</h2>
+</div>
+
+<div>
+{% for transaction in transactions %}
+    <div class="card m-4">
+
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="w-100">
+                <div class="d-flex align-items-center">
+                    <h3 class="fs-2">{{ transaction.title }}</h3>
+                    <span class="px-2">
+                        {% if transaction.transaction_type == "EX" %}
+                            <i class="bi bi-dash-circle-fill text-danger"></i>
+                        {% else %}
+                            <i class="bi bi-plus-circle-fill text-success"></i>
+                        {% endif %}
+                    </span>
+                </div>
+                <div>
+                    <span class="fst-italic">{{ transaction.date_created }}</span>  
+                </div>
+            </div>
+            <form action="{% url 'delete_transaction' transaction.id %}" action="post">
+                {% csrf_token %}
+                <button class="btn btn-danger">Eliminar</button>
+            </form>
+        </div>
+
+        <div class="card-body">
+            <p class="fst-italic fw-normal fs-4">
+                {{ transaction.description }}
+            </p>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="fs-5 m-0"> 
+                        <span class="fw-semibold">Transaction: </span> {{ transaction.transaction_type }} 
+                    </p>
+                    <p class="fs-5 m-0"> 
+                        <span class="fw-semibold">Category: </span> {{ transaction.category }} 
+                    </p>
+                </div>
+                <div>
+                    {% if transaction.transaction_type == "EX" %}
+                        <span class="fw-bolder fs-1 text-danger text-nowrap"> - $ {{ transaction.amount }} </span>
+                    {% else %}
+                        <span class="fw-bolder fs-1 text-success text-nowrap"> + $ {{ transaction.amount }} </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% empty %}
+    <div class="text-center">
+        <span class="fs-4 fst-italic text-secondary">
+            No transactions registered in the system
+        </span>
+    </div>
+{% endfor %}
+</div>

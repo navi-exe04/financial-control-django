@@ -11,49 +11,14 @@
       <span class="fs-4 fst-italic text-secondary">There is nothing yet.</span>
     </div>
   {% else %}
-    
-    {% for transaction in transactions %}
-      <div class="card m-4">
-
-        <div class="card-header d-flex justify-content-between">
-            <div class="d-flex align-items-center">
-              <span class="px-2">
-                {% if transaction.transaction_type == "EX" %}
-                  <i class="bi bi-dash-circle-fill text-danger"></i>
-                {% else %}
-                  <i class="bi bi-plus-circle-fill text-success"></i>
-                {% endif %}
-              </span>
-              <h3 class="fs-2">{{ transaction.title }}</h3>
-            </div>
-            <form action="{% url 'delete_transaction' transaction.id %}" action="post">
-              {% csrf_token %}
-              <button class="btn btn-danger">Eliminar</button>
-            </form>
-        </div>
-
-        <div class="card-body">
-          <p class="d-flex justify-content-between align-items-center">
-            <span class="fst-italic fw-normal fs-4">{{ transaction.description }}</span>
-            {% if transaction.transaction_type == "EX" %}
-              <span class="fw-bolder fs-1 text-danger"> - $ {{ transaction.amount }} </span>
-            {% else %}
-              <span class="fw-bolder fs-1 text-success"> + $ {{ transaction.amount }} </span>
-            {% endif %}
-          </p>
-          <div class="d-flex justify-content-evenly">
-            <p class="fs-5"> 
-              <span class="fw-semibold">Transaction: </span> {{ transaction.transaction_type }} 
-            </p>
-            <p class="fs-5"> 
-              <span class="fw-semibold">Category: </span> {{ transaction.category }} 
-            </p>
-          </div>
-        </div>
-
+    <div class="row">
+      <div class="col-md-6 col-sm-12">
+        {% include './layouts/list_transactions.html' with transactions=expenses transaction_type="Expenses"%}
       </div>
-    {% endfor %}
-
+      <div class="col-md-6 col-sm-12">
+        {% include './layouts/list_transactions.html' with transactions=incomes transaction_type="Incomes"%}
+      </div>
+    </div>
   {% endif %}
 </section>
 {% endblock %}

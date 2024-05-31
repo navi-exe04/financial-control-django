@@ -1,17 +1,21 @@
 {% extends './layouts/base.html' %}
+{% load static %}
 
 {% block content %}
-<main>
-    <h1>FINACON</h1>
-    <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempora corporis ut culpa. Laboriosam, aut quaerat,
-        veniam aspernatur similique id temporibus soluta minus, excepturi minima porro commodi. Tempore accusantium nisi
-        eaque tenetur dolorum tempora debitis repudiandae cumque, molestiae veniam incidunt adipisci obcaecati
-        doloremque. Optio labore, reprehenderit, rem qui nisi numquam inventore harum modi eos libero maiores nostrum
-        dignissimos laboriosam cumque? Nulla nesciunt quos, sed magnam obcaecati et repudiandae optio libero animi, rem
-        exercitationem quae adipisci dolorum odit, assumenda laboriosam in doloremque porro! Voluptatibus, accusamus
-        laborum delectus a velit voluptate qui, alias quas vero tempore aliquid placeat. Labore soluta animi dolorum
-        esse.
-    </p>
-</main>
+<section class="row my-5">
+    <div class="col-md-6 col-sm-12 px-4">
+        <h1 class="display-1 text-center">FINACON</h1>
+        <p class="fs-3 white-color">
+            This is a simple web application for help you to have a financial control about
+            your expenses and incomes. Feel free to register and try this app. 
+            <br />
+            This aplicacion is made with Python and his framework Django.
+            <br />
+            Made by: Raúl Langle.
+        </p>
+    </div>
+    <div class="col-md-6 col-sm-12 d-flex justify-content-center align-items-center">
+        <img src="{% static 'img/financial.svg' %}" alt="Financial control" class="w-75"/>
+    </div>
+</section>
 {% endblock %}

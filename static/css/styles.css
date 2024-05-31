@@ -1,0 +1,39 @@
+:root {
+    --main-black-color: #3A405A;
+    --main-white-color: #FFFCFF;
+    --red-color: #F56576;
+    --green-color: #8FE388;
+    --yellow-color: #F7B801;
+}
+
+body {
+    background-color: var(--main-black-color) !important;
+}
+
+header {
+    
+    img {
+        width: 100px !important;
+    }
+
+    span.navbar-toggler-icon {
+        color: var(--main-white-color) !important;
+    }
+    
+    a {
+        color: var(--main-white-color) !important;
+        font-weight: bolder;
+
+        &:hover {
+            color: var(--red-color) !important;
+        }
+    }
+}
+
+h1, h1 {
+    color: var(--main-white-color) !important;
+}
+
+.white-color {
+    color: var(--main-white-color) !important;
+}

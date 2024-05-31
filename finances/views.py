@@ -180,8 +180,11 @@ class ReportView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        user_info = self.request.user
         context["total_amount"] = self.request.user.total_amount
         context["transactions_count"] = self.get_queryset().count()
+        context["expenses"] = Transaction.objects.filter(user=user_info, transaction_type="EX")
+        context["incomes"] = Transaction.objects.filter(user=user_info, transaction_type="IN")
         return context
 
 
